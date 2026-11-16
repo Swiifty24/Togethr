@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block title %}Home — TOGETHR{% endblock %}
+
+{% block content %}
+<section class="welcome-home">
+  <div class="container">
+    <div class="avatar">{{ user.first_name|make_list|first|default:user.username|make_list|first }}</div>
+    <h2 class="fw-bold mb-2">Hey, {{ user.get_short_name|default:user.username }}!</h2>
+    <p class="text-muted fs-5 mb-0">Welcome to TOGETHR. More features coming soon.</p>
+  </div>
+</section>
+{% endblock %}
