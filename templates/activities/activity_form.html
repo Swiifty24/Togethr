@@ -1,0 +1,44 @@
+{% extends "base_app.html" %}
+{% block title %}{% if activity %}Edit activity{% else %}Create Activity{% endif %} · {{ SITE_NAME }}{% endblock %}
+{% block content %}
+<p class="crumb"><a href="{% if activity %}{% url 'activities:detail' activity.pk %}{% else %}{% url 'activities:home' %}{% endif %}"><svg class="icon icon-sm" aria-hidden="true"><use href="#i-chev-left"/></svg>{% if activity %}Back to activity{% else %}Back to Home{% endif %}</a></p>
+<div class="page-head"><div><h1>{% if activity %}Edit activity{% else %}Create Activity{% endif %}</h1>
+  <p class="muted">{% if activity %}People who joined will be told if the date, time or location changes.{% else %}Tell people what you're planning. You can invite friends right after.{% endif %}</p></div></div>
+
+<form method="post" enctype="multipart/form-data" class="card form-card">
+  {% csrf_token %}
+  {% include "includes/_form_errors.html" %}
+  {% include "includes/_field.html" with field=form.title %}
+  {% include "includes/_field.html" with field=form.description %}
+  <div class="form-grid">
+    {% include "includes/_field.html" with field=form.category %}
+    {% include "includes/_field.html" with field=form.location icon="pin" %}
+  </div>
+  <div class="form-grid form-grid-3">
+    {% include "includes/_field.html" with field=form.date %}
+    {% include "includes/_field.html" with field=form.start_time %}
+    {% include "includes/_field.html" with field=form.end_time %}
+  </div>
+  <div class="form-grid">
+    {% include "includes/_field.html" with field=form.min_participants %}
+    {% include "includes/_field.html" with field=form.max_participants %}
+  </div>
+  <div class="field{% if form.cover_image.errors %} has-error{% endif %}">
+    <label for="{{ form.cover_image.id_for_label }}">{{ form.cover_image.label }}</label>
+    {% if activity and activity.cover_image %}<div class="current-cover">{% include "includes/_cover.html" with a=activity cls="cover-thumb" %}<span class="muted small">Current image</span></div>{% endif %}
+    {{ form.cover_image }}
+    <p class="help">{{ form.cover_image.help_text }}</p>
+    {% for e in form.cover_image.errors %}<p class="error-text" role="alert">{{ e }}</p>{% endfor %}
+    {% if form.remove_cover and activity.cover_image %}{% include "includes/_checkbox.html" with field=form.remove_cover %}{% endif %}
+  </div>
+  <fieldset class="fieldset">
+    <legend>{{ form.visibility.label }}</legend>
+    <div class="radio-stack">{% for radio in form.visibility %}<label class="radio-card" for="{{ radio.id_for_label }}">{{ radio.tag }}<span>{{ radio.choice_label }}</span></label>{% endfor %}</div>
+    {% for e in form.visibility.errors %}<p class="error-text" role="alert">{{ e }}</p>{% endfor %}
+  </fieldset>
+  <div class="form-actions">
+    <a class="btn btn-ghost" href="{% if activity %}{% url 'activities:detail' activity.pk %}{% else %}{% url 'activities:home' %}{% endif %}">Cancel</a>
+    <button type="submit" class="btn btn-primary">{% if activity %}Save changes{% else %}Post activity{% endif %}</button>
+  </div>
+</form>
+{% endblock %}

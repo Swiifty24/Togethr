@@ -1,0 +1,65 @@
+{% extends "base_app.html" %}
+{% block title %}Home · {{ SITE_NAME }}{% endblock %}
+{% block content %}
+<section class="welcome" aria-labelledby="welcome-title">
+  <div class="welcome-text">
+    <h1 id="welcome-title">Welcome back, {{ user.get_short_name }}!</h1>
+    <p class="welcome-lead">Find something fun to do or bring your friends together.</p>
+    <p class="muted">Browse plans other people are putting together, join the ones that sound good, or start your own and invite your circle.</p>
+    <a class="btn btn-primary btn-lg" href="{% url 'activities:create' %}"><svg class="icon" aria-hidden="true"><use href="#i-plus"/></svg>Create Activity</a>
+  </div>
+  <div class="welcome-art">{% include "includes/_avatar.html" with u=user size="avatar-xxl" %}</div>
+</section>
+
+<form method="get" action="{% url 'activities:home' %}#explore" class="discover card" role="search" aria-label="Search activities">
+  <div class="d-search">
+    <label class="sr-only" for="f-q">Search activities</label>
+    <div class="input-wrap has-icon"><svg class="icon input-icon" aria-hidden="true"><use href="#i-search"/></svg>
+      <input type="search" id="f-q" name="q" class="input" placeholder="Search titles and descriptions" value="{{ filters.q.value|default:'' }}"></div>
+  </div>
+  <div><label class="sr-only" for="f-cat">Category</label>
+    <select id="f-cat" name="category" class="input select"><option value="">All categories</option>
+      {% for c in categories %}<option value="{{ c.slug }}"{% if filters.category.value == c.slug %} selected{% endif %}>{{ c.name }}</option>{% endfor %}</select></div>
+  <div><label class="sr-only" for="f-date">Date</label><input type="date" id="f-date" name="date" class="input" value="{{ filters.date.value|default:'' }}"></div>
+  <div><label class="sr-only" for="f-loc">Location</label><input type="text" id="f-loc" name="location" class="input" placeholder="Location" value="{{ filters.location.value|default:'' }}"></div>
+  <div><label class="sr-only" for="f-av">Availability</label>
+    <select id="f-av" name="availability" class="input select"><option value="">Any availability</option><option value="open"{% if filters.availability.value == 'open' %} selected{% endif %}>Has open slots</option></select></div>
+  <div class="d-actions"><button type="submit" class="btn btn-primary">Search</button>{% if filters_active %}<a class="btn btn-ghost" href="{% url 'activities:home' %}">Clear Filters</a>{% endif %}</div>
+</form>
+
+<section class="home-section" id="explore" aria-labelledby="explore-title">
+  <div class="section-head"><h2 id="explore-title">Explore activities</h2>{% if page.paginator.count %}<span class="muted small">{{ page.paginator.count }} available</span>{% endif %}</div>
+  {% if page.object_list %}
+  <div class="act-grid">{% for a in page.object_list %}{% include "activities/_card.html" with mode="explore" %}{% endfor %}</div>
+  {% include "activities/_pagination.html" %}
+  {% else %}
+  <div class="empty-state">
+    <svg class="icon icon-lg" aria-hidden="true"><use href="#i-search"/></svg>
+    <h3>{% if filters_active %}Nothing matches your search{% else %}No activities to explore yet{% endif %}</h3>
+    <p>{% if filters_active %}Try different words or clear the filters.{% else %}Be the first to plan something and invite people.{% endif %}</p>
+    {% if filters_active %}<a class="btn btn-secondary" href="{% url 'activities:home' %}">Clear Filters</a>{% else %}<a class="btn btn-primary" href="{% url 'activities:create' %}">Create Activity</a>{% endif %}
+  </div>
+  {% endif %}
+</section>
+
+<section class="home-section" aria-labelledby="up-title">
+  <div class="section-head"><h2 id="up-title">Your upcoming activities</h2><a class="link-sm" href="{% url 'activities:my_activities' %}?tab=upcoming">View All</a></div>
+  {% if upcoming %}
+  <div class="mini-list-act">{% for a in upcoming %}{% include "activities/_mini.html" %}{% endfor %}</div>
+  {% else %}
+  <div class="empty-state empty-sm"><p>Nothing planned yet. Join an activity above or create your own.</p></div>
+  {% endif %}
+</section>
+
+{% if suggested %}
+<section class="home-section" aria-labelledby="sg-title">
+  <div class="section-head"><h2 id="sg-title">Suggested for you</h2></div>
+  <div class="act-grid">{% for a in suggested %}{% include "activities/_card.html" with mode="explore" %}{% endfor %}</div>
+</section>
+{% endif %}
+
+<section class="promo" aria-labelledby="promo-title">
+  <div><h2 id="promo-title">Have something in mind?</h2><p>Bring your friends together and create an activity everyone can enjoy.</p></div>
+  <a class="btn btn-primary btn-lg" href="{% url 'activities:create' %}">Create an Activity</a>
+</section>
+{% endblock %}

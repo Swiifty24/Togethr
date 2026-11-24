@@ -1,0 +1,16 @@
+{% if items %}
+<ul class="activity-list">
+  {% for item in items %}
+  <li class="activity-item">
+    <span class="activity-dot dot-{{ item.action }}" aria-hidden="true"></span>
+    <div>
+      <p class="activity-title">{{ item.get_action_display }}{% if show_user and item.user %} · <a href="{% url 'adminpanel:user_detail' item.user.pk %}">{{ item.user.username }}</a>{% elif show_user and item.identifier %} · {{ item.identifier }}{% endif %}</p>
+      {% if item.description %}<p class="activity-desc">{{ item.description }}{% if show_user and item.actor %} (by {{ item.actor.username }}){% endif %}</p>{% endif %}
+      <p class="activity-time"><time datetime="{{ item.created_at|date:'c' }}" title="{{ item.created_at|date:'M j, Y g:i A' }}">{{ item.created_at|timesince }} ago</time>{% if item.ip_address and show_user %} · {{ item.ip_address }}{% endif %}</p>
+    </div>
+  </li>
+  {% endfor %}
+</ul>
+{% else %}
+<p class="empty">Nothing here yet.</p>
+{% endif %}

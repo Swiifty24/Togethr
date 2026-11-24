@@ -1,0 +1,22 @@
+{% extends "base_app.html" %}
+{% block title %}My Activities · {{ SITE_NAME }}{% endblock %}
+{% block content %}
+<div class="page-head">
+  <div><h1>My Activities</h1><p class="muted">Plans you organize and plans you've joined.</p></div>
+  <a class="btn btn-primary" href="{% url 'activities:create' %}"><svg class="icon icon-sm" aria-hidden="true"><use href="#i-plus"/></svg>Create Activity</a>
+</div>
+<nav class="tabs" aria-label="Filter activities">
+  {% for key, label in tabs %}<a href="?tab={{ key }}" class="tab{% if tab == key %} active{% endif %}"{% if tab == key %} aria-current="page"{% endif %}>{{ label }}</a>{% endfor %}
+</nav>
+{% if page.object_list %}
+<div class="act-grid">{% for a in page.object_list %}{% include "activities/_card.html" with mode="mine" %}{% endfor %}</div>
+{% include "activities/_pagination.html" with querystring="tab="|add:tab %}
+{% else %}
+<div class="empty-state">
+  <svg class="icon icon-lg" aria-hidden="true"><use href="#i-calendar"/></svg>
+  <h3>No activities here yet</h3>
+  <p>Create something new or find one to join on Home.</p>
+  <div class="empty-actions"><a class="btn btn-primary" href="{% url 'activities:create' %}">Create Activity</a><a class="btn btn-secondary" href="{% url 'activities:home' %}">Explore Activities</a></div>
+</div>
+{% endif %}
+{% endblock %}

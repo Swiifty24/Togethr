@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block title %}Session expired · {{ SITE_NAME }}{% endblock %}
+{% block content %}
+<section class="error-page">
+  <p class="error-code" aria-hidden="true">403</p>
+  <h1>That form expired</h1>
+  <p class="lead">For your security, the form couldn't be verified. Reload the page and try again, and make sure cookies are enabled.</p>
+  <div class="error-actions"><a class="btn btn-primary" href="{% url 'core:landing' %}">Back to home</a></div>
+</section>
+{% endblock %}

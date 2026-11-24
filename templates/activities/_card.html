@@ -1,0 +1,45 @@
+{# a = activity (with my_response), mode = "explore" | "mine" #}
+<article class="act-card">
+  <a class="act-cover-link" href="{% url 'activities:detail' a.pk %}" tabindex="-1" aria-hidden="true">{% include "includes/_cover.html" with a=a cls="cover-card" %}</a>
+  <div class="act-body">
+    <div class="act-tags">{% if a.category %}<span class="pill">{{ a.category.name }}</span>{% endif %}{% include "includes/_activity_status.html" %}</div>
+    <h3 class="act-title"><a href="{% url 'activities:detail' a.pk %}">{{ a.title }}</a></h3>
+    <p class="act-desc">{{ a.description|truncatechars:110 }}</p>
+    <ul class="act-meta">
+      <li><svg class="icon icon-sm" aria-hidden="true"><use href="#i-calendar"/></svg>{{ a.date|date:"D, M j" }}</li>
+      <li><svg class="icon icon-sm" aria-hidden="true"><use href="#i-clock"/></svg>{{ a.start_time|time:"g:i A" }}{% if a.end_time %} to {{ a.end_time|time:"g:i A" }}{% endif %}</li>
+      <li><svg class="icon icon-sm" aria-hidden="true"><use href="#i-pin"/></svg>{{ a.location }}</li>
+      <li><svg class="icon icon-sm" aria-hidden="true"><use href="#i-users"/></svg>{{ a.join_count }}{% if a.max_participants %} of {{ a.max_participants }}{% endif %} going{% if a.max_participants %}, {% if a.is_full %}full{% else %}{{ a.spots_left }} slot{{ a.spots_left|pluralize }} left{% endif %}{% endif %}</li>
+    </ul>
+    <div class="act-org">{% include "includes/_avatar.html" with u=a.organizer size="avatar-xs" %}<span>{% if a.is_mine %}You{% else %}{{ a.organizer.full_name }}{% endif %}</span></div>
+  </div>
+  <div class="act-foot">
+    {% if mode == "mine" %}
+      <a class="btn btn-secondary btn-sm" href="{% url 'activities:detail' a.pk %}">View Details</a>
+      {% if a.is_mine %}
+        {% if a.is_open %}
+        <a class="btn btn-ghost btn-sm" href="{% url 'activities:edit' a.pk %}">Edit</a>
+        <a class="btn btn-ghost btn-sm" href="{% url 'activities:participants' a.pk %}">Manage Participants</a>
+        <a class="btn btn-ghost btn-sm" href="{% url 'activities:participants' a.pk %}#invite">Invite Friends</a>
+        <a class="btn btn-danger-ghost btn-sm" href="{% url 'activities:cancel' a.pk %}">Cancel Activity</a>
+        {% else %}<a class="btn btn-ghost btn-sm" href="{% url 'activities:participants' a.pk %}">View Participants</a>{% endif %}
+      {% else %}
+        <a class="btn btn-ghost btn-sm" href="{% url 'activities:participants' a.pk %}">View Participants</a>
+        {% if a.is_open %}
+        <form method="post" action="{% url 'activities:leave' a.pk %}">{% csrf_token %}<input type="hidden" name="next" value="{{ request.get_full_path }}"><button type="submit" class="btn btn-danger-ghost btn-sm">Leave Activity</button></form>
+        {% endif %}
+      {% endif %}
+    {% else %}
+      {% if a.my_response == "join" %}
+        {% include "includes/_response_badge.html" with response="join" label="You're in" %}
+      {% elif a.my_response %}
+        {% include "includes/_response_badge.html" with response=a.my_response label=a.my_response_label %}
+      {% elif a.is_full %}
+        <button type="button" class="btn btn-secondary btn-sm" disabled>Activity full</button>
+      {% else %}
+        <form method="post" action="{% url 'activities:join' a.pk %}">{% csrf_token %}<input type="hidden" name="next" value="{{ request.get_full_path }}"><button type="submit" class="btn btn-primary btn-sm">Join Activity</button></form>
+      {% endif %}
+      <a class="btn btn-ghost btn-sm" href="{% url 'activities:detail' a.pk %}">View Details</a>
+    {% endif %}
+  </div>
+</article>

@@ -1,0 +1,37 @@
+{% extends "base_app.html" %}
+{% load ui static %}
+{% block title %}{% if target %}Edit {{ target.full_name }}{% else %}Add user{% endif %} · {{ SITE_NAME }}{% endblock %}
+{% block content %}
+<p class="crumb"><a href="{% if target %}{% url 'adminpanel:user_detail' target.pk %}{% else %}{% url 'adminpanel:user_list' %}{% endif %}"><svg class="icon icon-sm" aria-hidden="true"><use href="#i-chev-left"/></svg>{% if target %}Back to {{ target.full_name }}{% else %}All users{% endif %}</a></p>
+<div class="page-head"><div><h1>{% if target %}Edit account{% else %}Add user{% endif %}</h1>
+  <p class="muted">{% if target %}Changes apply immediately.{% else %}Accounts created here are active and email-verified straight away.{% endif %}</p></div></div>
+
+<form method="post" class="card form-card" data-password-form>
+  {% csrf_token %}
+  {% include "includes/_form_errors.html" %}
+  <div class="form-grid">
+    {% include "includes/_field.html" with field=form.full_name %}
+    {% include "includes/_field.html" with field=form.username %}
+    {% include "includes/_field.html" with field=form.email %}
+    {% include "includes/_field.html" with field=form.role %}
+  </div>
+  <fieldset class="fieldset">
+    <legend>Account status</legend>
+    {% include "includes/_checkbox.html" with field=form.is_active %}
+    {% include "includes/_checkbox.html" with field=form.email_verified %}
+  </fieldset>
+  <fieldset class="fieldset">
+    <legend>{% if target %}Set a new password{% else %}Password{% endif %}</legend>
+    <div class="form-grid">
+      {% include "includes/_field.html" with field=form.password1 icon="lock" toggle=True %}
+      {% include "includes/_field.html" with field=form.password2 icon="lock" toggle=True %}
+    </div>
+    {% if target %}{% password_rules optional=True %}{% else %}{% password_rules %}{% endif %}
+  </fieldset>
+  <div class="form-actions">
+    <a class="btn btn-ghost" href="{% if target %}{% url 'adminpanel:user_detail' target.pk %}{% else %}{% url 'adminpanel:user_list' %}{% endif %}">Cancel</a>
+    <button type="submit" class="btn btn-primary" data-password-submit>{% if target %}Save changes{% else %}Create account{% endif %}</button>
+  </div>
+</form>
+{% endblock %}
+{% block extra_js %}<script src="{% static 'js/password.js' %}" defer></script>{% endblock %}
