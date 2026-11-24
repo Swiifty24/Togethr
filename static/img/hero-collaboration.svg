@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 560" role="img" aria-labelledby="t">
+  <title id="t">Three people in overlapping circles, joined at the centre</title>
+  <rect width="640" height="560" rx="28" fill="#FFF3F1"/>
+  <circle cx="540" cy="70" r="46" fill="#ECFDF5"/>
+  <circle cx="86" cy="496" r="58" fill="#FFDAD4"/>
+
+  <!-- the three overlapping circles (brand mark) -->
+  <circle cx="250" cy="238" r="150" fill="#FF5A43" fill-opacity=".92"/>
+  <circle cx="390" cy="238" r="150" fill="#FFDAD4" fill-opacity=".88"/>
+  <circle cx="320" cy="360" r="150" fill="#FF7A00" fill-opacity=".82"/>
+
+  <!-- connecting lines -->
+  <g stroke="#FFFFFF" stroke-width="3" stroke-dasharray="2 9" stroke-linecap="round" opacity=".9">
+    <path d="M205 250 L300 270"/>
+    <path d="M435 250 L340 270"/>
+    <path d="M320 420 L320 308"/>
+  </g>
+
+  <!-- person: left -->
+  <circle cx="205" cy="192" r="21" fill="#FFFFFF"/>
+  <path d="M164 268c0-26 17-38 41-38s41 12 41 38z" fill="#FFFFFF"/>
+  <!-- person: right -->
+  <circle cx="435" cy="192" r="21" fill="#FFFFFF"/>
+  <path d="M394 268c0-26 17-38 41-38s41 12 41 38z" fill="#FFFFFF"/>
+  <!-- person: bottom -->
+  <circle cx="320" cy="396" r="21" fill="#FFFFFF"/>
+  <path d="M279 472c0-26 17-38 41-38s41 12 41 38z" fill="#FFFFFF"/>
+
+  <!-- shared centre -->
+  <circle cx="320" cy="282" r="30" fill="#FFFFFF"/>
+  <path d="M305 283l11 11 20-22" stroke="#7A3535" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+
+  <!-- floating chips -->
+  <g>
+    <rect x="34" y="52" width="176" height="58" rx="16" fill="#FFFFFF"/>
+    <circle cx="64" cy="81" r="14" fill="#FFDAD4"/>
+    <circle cx="88" cy="81" r="14" fill="#FF5A43"/>
+    <circle cx="112" cy="81" r="14" fill="#FF7A00"/>
+    <rect x="138" y="72" width="56" height="8" rx="4" fill="#E9EEF5"/>
+    <rect x="138" y="86" width="36" height="8" rx="4" fill="#E9EEF5"/>
+  </g>
+  <g>
+    <rect x="432" y="440" width="176" height="58" rx="16" fill="#FFFFFF"/>
+    <circle cx="462" cy="469" r="15" fill="#ECFDF5"/>
+    <path d="M455 469l5 5 9-10" stroke="#087056" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+    <rect x="488" y="460" width="96" height="8" rx="4" fill="#E9EEF5"/>
+    <rect x="488" y="474" width="60" height="8" rx="4" fill="#E9EEF5"/>
+  </g>
+</svg>

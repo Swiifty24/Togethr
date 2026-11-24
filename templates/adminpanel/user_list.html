@@ -1,0 +1,69 @@
+{% extends "base_app.html" %}
+{% block title %}Users · {{ SITE_NAME }}{% endblock %}
+{% block content %}
+<div class="page-head">
+  <div><h1>Users</h1><p class="muted">{{ total }} account{{ total|pluralize }} found.</p></div>
+  <a class="btn btn-primary" href="{% url 'adminpanel:user_create' %}"><svg class="icon icon-sm" aria-hidden="true"><use href="#i-plus"/></svg>Add user</a>
+</div>
+
+<form method="get" class="filters card" role="search">
+  <div class="filter-search">
+    <label class="sr-only" for="q">Search users</label>
+    <div class="input-wrap has-icon"><svg class="icon input-icon" aria-hidden="true"><use href="#i-search"/></svg>
+      <input type="search" id="q" name="q" value="{{ q }}" class="input" placeholder="Search name, username or email"></div>
+  </div>
+  <div class="filter-select">
+    <label class="sr-only" for="role">Role</label>
+    <select name="role" id="role" class="input select">
+      <option value="">All roles</option>
+      {% for value, label in role_choices %}<option value="{{ value }}"{% if role == value %} selected{% endif %}>{{ label }}</option>{% endfor %}
+    </select>
+  </div>
+  <div class="filter-select">
+    <label class="sr-only" for="status">Status</label>
+    <select name="status" id="status" class="input select">
+      <option value="">All statuses</option>
+      <option value="active"{% if status == 'active' %} selected{% endif %}>Active</option>
+      <option value="unverified"{% if status == 'unverified' %} selected{% endif %}>Unverified</option>
+      <option value="inactive"{% if status == 'inactive' %} selected{% endif %}>Deactivated</option>
+    </select>
+  </div>
+  <div class="filter-actions">
+    <button type="submit" class="btn btn-primary">Apply</button>
+    {% if q or role or status %}<a class="btn btn-ghost" href="{% url 'adminpanel:user_list' %}">Reset</a>{% endif %}
+  </div>
+</form>
+
+<div class="card card-flush">
+  <div class="table-wrap">
+    <table class="table table-stack">
+      <thead><tr><th scope="col">User</th><th scope="col">Role</th><th scope="col">Status</th><th scope="col">Joined</th><th scope="col">Last sign-in</th><th scope="col"><span class="sr-only">Actions</span></th></tr></thead>
+      <tbody>
+        {% for u in page %}
+        <tr>
+          <td data-label="User"><div class="user-cell"><span class="avatar avatar-sm">{{ u.initials }}</span><div><a class="user-name" href="{% url 'adminpanel:user_detail' u.pk %}">{{ u.full_name }}</a><p class="muted small">{{ u.email }}</p></div></div></td>
+          <td data-label="Role">{% include "includes/_role_badge.html" with u=u %}</td>
+          <td data-label="Status">{% include "includes/_status_badge.html" with u=u %}</td>
+          <td data-label="Joined">{{ u.date_joined|date:"M j, Y" }}</td>
+          <td data-label="Last sign-in">{{ u.last_login|date:"M j, Y"|default:"Never" }}</td>
+          <td class="cell-actions">
+            <a class="btn btn-ghost btn-sm" href="{% url 'adminpanel:user_detail' u.pk %}">View</a>
+            <a class="btn btn-ghost btn-sm" href="{% url 'adminpanel:user_edit' u.pk %}">Edit</a>
+          </td>
+        </tr>
+        {% empty %}
+        <tr class="row-empty"><td colspan="6"><p class="empty">No users match your filters.</p></td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+{% if page.paginator.num_pages > 1 %}
+<nav class="pagination" aria-label="Pagination">
+  {% if page.has_previous %}<a class="btn btn-secondary btn-sm" href="?{% if querystring %}{{ querystring }}&amp;{% endif %}page={{ page.previous_page_number }}"><svg class="icon icon-sm" aria-hidden="true"><use href="#i-chev-left"/></svg>Previous</a>{% else %}<span></span>{% endif %}
+  <span class="muted small">Page {{ page.number }} of {{ page.paginator.num_pages }}</span>
+  {% if page.has_next %}<a class="btn btn-secondary btn-sm" href="?{% if querystring %}{{ querystring }}&amp;{% endif %}page={{ page.next_page_number }}">Next<svg class="icon icon-sm" aria-hidden="true"><use href="#i-chev-right"/></svg></a>{% else %}<span></span>{% endif %}
+</nav>
+{% endif %}
+{% endblock %}

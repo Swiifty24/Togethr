@@ -1,0 +1,28 @@
+{% extends "base_app.html" %}
+{% block title %}Notifications · {{ SITE_NAME }}{% endblock %}
+{% block content %}
+<div class="page-head">
+  <div><h1>Notifications</h1><p class="muted">Invitations, responses, confirmations and changes.</p></div>
+  {% if unread_notifications %}<form method="post" action="{% url 'members:notifications_read' %}">{% csrf_token %}<button type="submit" class="btn btn-secondary">Mark all as read</button></form>{% endif %}
+</div>
+{% if page.object_list %}
+<ul class="note-list card card-flush">
+  {% for n in page.object_list %}
+  <li class="note{% if not n.is_read %} unread{% endif %}">
+    <span class="note-dot note-{{ n.level }}" aria-hidden="true"></span>
+    <form method="post" action="{% url 'members:notification_open' n.pk %}" class="note-open-form">
+      {% csrf_token %}
+      <button type="submit" class="note-link">
+        <span class="note-title">{{ n.title }}{% if not n.is_read %}<span class="sr-only"> (unread)</span>{% endif %}</span>
+        {% if n.message %}<span class="note-text">{{ n.message }}</span>{% endif %}
+        <span class="activity-time">{{ n.created_at|timesince }} ago</span>
+      </button>
+    </form>
+  </li>
+  {% endfor %}
+</ul>
+{% include "activities/_pagination.html" with querystring="" %}
+{% else %}
+<div class="empty-state"><svg class="icon icon-lg" aria-hidden="true"><use href="#i-bell"/></svg><h3>No notifications yet</h3><p>You'll see invitations and activity updates here.</p></div>
+{% endif %}
+{% endblock %}

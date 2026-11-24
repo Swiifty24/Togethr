@@ -1,0 +1,67 @@
+{% extends "base_app.html" %}
+{% block title %}{{ activity.title }} · {{ SITE_NAME }}{% endblock %}
+{% block content %}
+<p class="crumb"><a href="{% url 'activities:home' %}"><svg class="icon icon-sm" aria-hidden="true"><use href="#i-chev-left"/></svg>Back to Home</a></p>
+{% include "includes/_cover.html" with a=activity cls="cover-hero" %}
+<div class="detail-grid">
+  <div class="detail-main">
+    <div class="act-tags">{% if activity.category %}<span class="pill">{{ activity.category.name }}</span>{% endif %}{% include "includes/_activity_status.html" with a=activity %}{% if activity.visibility == "invite_only" %}<span class="pill">Invite only</span>{% endif %}</div>
+    <h1>{{ activity.title }}</h1>
+    <div class="organizer-row">{% include "includes/_avatar.html" with u=activity.organizer size="avatar-sm" %}<div><p class="small muted">Organized by</p><p class="org-name">{% if is_organizer %}You{% else %}{{ activity.organizer.full_name }}{% endif %}</p></div></div>
+    <p class="detail-desc">{{ activity.description|linebreaksbr }}</p>
+    <ul class="facts">
+      <li><svg class="icon" aria-hidden="true"><use href="#i-calendar"/></svg><div><strong>{{ activity.date|date:"l, F j, Y" }}</strong><span>{{ activity.start_time|time:"g:i A" }}{% if activity.end_time %} to {{ activity.end_time|time:"g:i A" }}{% endif %}</span></div></li>
+      <li><svg class="icon" aria-hidden="true"><use href="#i-pin"/></svg><div><strong>{{ activity.location }}</strong><span>Location</span></div></li>
+    </ul>
+    <section class="detail-people" aria-labelledby="who-title">
+      <div class="section-head"><h2 id="who-title">Who's going</h2><a class="link-sm" href="{% url 'activities:participants' activity.pk %}">{% if is_organizer %}Manage Participants{% else %}View Participants{% endif %}</a></div>
+      {% if joined %}
+      <ul class="people-row">{% for p in joined %}<li>{% include "includes/_avatar.html" with u=p.user size="avatar-sm" %}<span>{{ p.user.full_name }}</span></li>{% endfor %}</ul>
+      {% if joined_total > 12 %}<p class="muted small">and {{ joined_total|add:"-12" }} more</p>{% endif %}
+      {% else %}<p class="empty">Nobody has joined yet.</p>{% endif %}
+    </section>
+  </div>
+
+  <aside class="detail-side">
+    <div class="card side-card">
+      <h2 class="card-title">Participants</h2>
+      <p class="big-count">{{ activity.join_count }}<span>{% if activity.max_participants %} of {{ activity.max_participants }}{% endif %} going</span></p>
+      <div class="meter" role="progressbar" aria-valuemin="0" aria-valuemax="{{ activity.min_participants }}" aria-valuenow="{{ activity.join_count }}" aria-label="Joined compared with the minimum needed"><span style="width: {{ activity.progress_pct }}%"></span></div>
+      <p class="small muted">
+        {% if activity.status == "pending" %}{{ activity.still_needed }} more needed to confirm (minimum {{ activity.min_participants }}).
+        {% elif activity.status == "confirmed" %}Minimum of {{ activity.min_participants }} reached. It's on!
+        {% elif activity.status == "completed" %}This activity has finished.
+        {% else %}This activity was canceled.{% endif %}
+        {% if activity.max_participants %}{% if activity.is_full %} It's full.{% else %} {{ activity.spots_left }} slot{{ activity.spots_left|pluralize }} left.{% endif %}{% endif %}
+      </p>
+
+      {% if is_organizer %}
+        {% if activity.is_open %}
+        <div class="side-actions">
+          <a class="btn btn-primary btn-block" href="{% url 'activities:participants' activity.pk %}#invite"><svg class="icon icon-sm" aria-hidden="true"><use href="#i-user-plus"/></svg>Invite Friends</a>
+          <a class="btn btn-secondary btn-block" href="{% url 'activities:edit' activity.pk %}">Edit Activity</a>
+          <a class="btn btn-secondary btn-block" href="{% url 'activities:participants' activity.pk %}">Manage Participants</a>
+          <a class="btn btn-danger-ghost btn-block" href="{% url 'activities:cancel' activity.pk %}">Cancel Activity</a>
+        </div>
+        {% if pending_replies %}<p class="small muted">{{ pending_replies }} invited {{ pending_replies|pluralize:"person hasn't,people haven't" }} replied yet.</p>{% endif %}
+        {% endif %}
+      {% elif can_respond %}
+        <div class="side-actions">
+          {% if my_part and my_part.invited_by_id %}<p class="small"><strong>Will you be there?</strong></p>
+          {% include "activities/_respond.html" with a=activity next=request.get_full_path %}
+          {% elif my_part and my_part.response == "join" %}
+          <p class="resp-note">{% include "includes/_response_badge.html" with response="join" label="You're in" %}</p>
+          <form method="post" action="{% url 'activities:leave' activity.pk %}">{% csrf_token %}<input type="hidden" name="next" value="{{ request.get_full_path }}"><button type="submit" class="btn btn-danger-ghost btn-block">Leave Activity</button></form>
+          {% elif activity.is_full and not my_part %}
+          <button type="button" class="btn btn-secondary btn-block" disabled>Activity full</button>
+          {% else %}
+          <form method="post" action="{% url 'activities:join' activity.pk %}">{% csrf_token %}<input type="hidden" name="next" value="{{ request.get_full_path }}"><button type="submit" class="btn btn-primary btn-block">Join Activity</button></form>
+          {% endif %}
+        </div>
+      {% elif my_part %}
+        <p class="resp-note">Your response: {% include "includes/_response_badge.html" with response=my_part.response label=my_part.get_response_display %}</p>
+      {% endif %}
+    </div>
+  </aside>
+</div>
+{% endblock %}

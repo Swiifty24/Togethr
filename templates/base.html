@@ -1,0 +1,33 @@
+{% load static %}<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}{{ SITE_NAME }}{% endblock %}</title>
+  <meta name="description" content="{% block meta_description %}Togethr is a calm, collaborative space for the people you work and plan with.{% endblock %}">
+  <meta name="theme-color" content="#FF5A43">
+  <link rel="icon" type="image/svg+xml" href="{% static 'img/favicon.svg' %}">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+  <link rel="stylesheet" href="{% static 'css/base.css' %}">
+  <link rel="stylesheet" href="{% static 'css/components.css' %}">
+  <link rel="stylesheet" href="{% static 'css/public.css' %}">
+  {% block extra_css %}{% endblock %}
+</head>
+<body class="{% block body_class %}{% endblock %}">
+  {% include "includes/_icons.html" %}
+  <a class="skip-link" href="#main">Skip to content</a>
+  {% block body %}
+    {% include "includes/_public_nav.html" %}
+    <main id="main" class="public-main">
+      <div class="container">{% include "includes/_messages.html" %}</div>
+      {% block content %}{% endblock %}
+    </main>
+    {% include "includes/_footer.html" %}
+  {% endblock %}
+  <script src="{% static 'js/ui.js' %}" defer></script>
+  {% block extra_js %}{% endblock %}
+</body>
+</html>

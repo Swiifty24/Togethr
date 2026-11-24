@@ -1,0 +1,19 @@
+{% extends "base_app.html" %}
+{% block title %}Delete {{ target.full_name }} · {{ SITE_NAME }}{% endblock %}
+{% block content %}
+<p class="crumb"><a href="{% url 'adminpanel:user_detail' target.pk %}"><svg class="icon icon-sm" aria-hidden="true"><use href="#i-chev-left"/></svg>Back to {{ target.full_name }}</a></p>
+<section class="card confirm-card">
+  <div class="auth-icon auth-icon-danger"><svg class="icon icon-lg" aria-hidden="true"><use href="#i-trash"/></svg></div>
+  <h1>Delete this account?</h1>
+  <p class="lead">You're about to permanently delete <strong>{{ target.full_name }}</strong> (@{{ target.username }}, {{ target.email }}). Their profile and notifications will be removed. This can't be undone.</p>
+  {% if blocked %}
+    <div class="alert alert-error" role="alert"><svg class="icon" aria-hidden="true"><use href="#i-alert"/></svg><span>{{ blocked }}</span></div>
+    <a class="btn btn-secondary" href="{% url 'adminpanel:user_detail' target.pk %}">Go back</a>
+  {% else %}
+    <form method="post" class="confirm-actions">{% csrf_token %}
+      <a class="btn btn-ghost" href="{% url 'adminpanel:user_detail' target.pk %}">Cancel</a>
+      <button type="submit" class="btn btn-danger">Yes, delete account</button>
+    </form>
+  {% endif %}
+</section>
+{% endblock %}

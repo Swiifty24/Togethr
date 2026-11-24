@@ -1,0 +1,40 @@
+{% extends "base_app.html" %}
+{% block title %}Calendar · {{ SITE_NAME }}{% endblock %}
+{% block content %}
+<div class="page-head">
+  <div><h1>Calendar</h1><p class="muted">Your plans and invitations by date.</p></div>
+  <div class="cal-nav">
+    <a class="btn btn-secondary btn-sm" href="?month={{ prev|date:'Y-m' }}" aria-label="Previous month"><svg class="icon icon-sm" aria-hidden="true"><use href="#i-chev-left"/></svg></a>
+    <strong class="cal-title">{{ month|date:"F Y" }}</strong>
+    <a class="btn btn-secondary btn-sm" href="?month={{ next|date:'Y-m' }}" aria-label="Next month"><svg class="icon icon-sm" aria-hidden="true"><use href="#i-chev-right"/></svg></a>
+    <a class="btn btn-ghost btn-sm" href="{% url 'activities:calendar' %}">Today</a>
+  </div>
+</div>
+<p class="legend"><span><i class="key key-organizer"></i>Organizing</span><span><i class="key key-joined"></i>Joined</span><span><i class="key key-maybe"></i>Not sure</span><span><i class="key key-invited"></i>Invited</span></p>
+
+<div class="cal card card-flush">
+  <div class="cal-head" aria-hidden="true">{% for d in weekdays %}<span>{{ d }}</span>{% endfor %}</div>
+  {% for week in weeks %}
+  <div class="cal-week">
+    {% for day in week %}
+    <div class="cal-day{% if not day.in_month %} out{% endif %}{% if day.is_today %} today{% endif %}">
+      <span class="cal-num">{{ day.date.day }}</span>
+      {% for a in day.items|slice:":3" %}<a class="cal-ev ev-{{ a.kind }}" href="{% url 'activities:detail' a.pk %}" title="{{ a.title }}">{{ a.start_time|time:"g:i" }} {{ a.title }}</a>{% endfor %}
+      {% if day.items|length > 3 %}<span class="cal-more">+{{ day.items|length|add:"-3" }} more</span>{% endif %}
+    </div>
+    {% endfor %}
+  </div>
+  {% endfor %}
+</div>
+
+<section class="home-section" aria-labelledby="ag-title">
+  <div class="section-head"><h2 id="ag-title">{{ month|date:"F" }} schedule</h2></div>
+  {% for a in agenda %}
+  <a class="agenda-item" href="{% url 'activities:detail' a.pk %}">
+    <span class="agenda-date"><strong>{{ a.date|date:"j" }}</strong>{{ a.date|date:"D" }}</span>
+    <span class="agenda-text"><span class="agenda-title">{{ a.title }}</span><span class="muted small">{{ a.start_time|time:"g:i A" }}, {{ a.location }}</span></span>
+    <i class="key key-{{ a.kind }}" aria-hidden="true"></i><span class="sr-only">{{ a.kind }}</span>
+  </a>
+  {% empty %}<p class="empty">Nothing scheduled this month.</p>{% endfor %}
+</section>
+{% endblock %}

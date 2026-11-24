@@ -1,0 +1,39 @@
+{% extends "base_app.html" %}
+{% load ui static %}
+{% block title %}Settings · {{ SITE_NAME }}{% endblock %}
+{% block content %}
+<div class="page-head">
+  <div><h1>Settings</h1><p class="muted">Manage your password and review your account.</p></div>
+</div>
+<div class="two-col">
+  <section class="card" aria-labelledby="pw-title">
+    <h2 id="pw-title" class="card-title">Change password</h2>
+    <form method="post" data-password-form>
+      {% csrf_token %}
+      {% include "includes/_form_errors.html" %}
+      {% include "includes/_field.html" with field=form.old_password icon="lock" toggle=True %}
+      {% include "includes/_field.html" with field=form.new_password1 icon="lock" toggle=True %}
+      {% password_rules %}
+      {% include "includes/_field.html" with field=form.new_password2 icon="lock" toggle=True %}
+      <div class="form-actions"><button type="submit" class="btn btn-primary" data-password-submit>Update password</button></div>
+    </form>
+  </section>
+  <div class="stack">
+    <section class="card" aria-labelledby="acct-title">
+      <h2 id="acct-title" class="card-title">Account details</h2>
+      <dl class="kv kv-stack">
+        <div><dt>Username</dt><dd>{{ user.username }}</dd></div>
+        <div><dt>Email</dt><dd>{{ user.email }} <span class="badge badge-active">Verified</span></dd></div>
+        <div><dt>Role</dt><dd>{% include "includes/_role_badge.html" with u=user %}</dd></div>
+        <div><dt>Member since</dt><dd>{{ user.date_joined|date:"F j, Y" }}</dd></div>
+        <div><dt>Last sign-in</dt><dd>{{ user.last_login|date:"M j, Y g:i A" }}</dd></div>
+      </dl>
+    </section>
+    <section class="card" aria-labelledby="sec-title">
+      <h2 id="sec-title" class="card-title">Recent security activity</h2>
+      {% include "includes/_activity_list.html" with items=security_activity %}
+    </section>
+  </div>
+</div>
+{% endblock %}
+{% block extra_js %}<script src="{% static 'js/password.js' %}" defer></script>{% endblock %}

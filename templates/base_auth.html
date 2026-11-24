@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block body_class %}auth-body{% endblock %}
+{% block content %}
+<section class="auth-page">
+  <div class="auth-card">
+    <div class="auth-head">
+      {% block auth_icon %}{% endblock %}
+      <h1>{% block auth_title %}{% endblock %}</h1>
+      <p class="lead">{% block auth_lead %}{% endblock %}</p>
+    </div>
+    {% block auth_body %}{% endblock %}
+  </div>
+  <p class="auth-foot">{% block auth_foot %}{% endblock %}</p>
+</section>
+{% endblock %}

@@ -1,0 +1,7 @@
+{# a = activity, my_part = Participation|None, next = url #}
+<form method="post" action="{% url 'activities:respond' a.pk %}" class="respond-group" role="group" aria-label="Your response">
+  {% csrf_token %}<input type="hidden" name="next" value="{{ next }}">
+  <button type="submit" name="response" value="join" class="resp resp-join{% if my_part.response == 'join' %} is-on{% endif %}" aria-pressed="{% if my_part.response == 'join' %}true{% else %}false{% endif %}"><svg class="icon icon-sm" aria-hidden="true"><use href="#i-check"/></svg>Join</button>
+  <button type="submit" name="response" value="not_sure" class="resp resp-sure{% if my_part.response == 'not_sure' %} is-on{% endif %}" aria-pressed="{% if my_part.response == 'not_sure' %}true{% else %}false{% endif %}">Not Sure</button>
+  <button type="submit" name="response" value="cant_join" class="resp resp-no{% if my_part.response == 'cant_join' %} is-on{% endif %}" aria-pressed="{% if my_part.response == 'cant_join' %}true{% else %}false{% endif %}"><svg class="icon icon-sm" aria-hidden="true"><use href="#i-x"/></svg>Can't Join</button>
+</form>

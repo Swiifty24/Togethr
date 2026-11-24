@@ -1,0 +1,10 @@
+<article class="mini-act">
+  <a href="{% url 'activities:detail' a.pk %}" tabindex="-1" aria-hidden="true">{% include "includes/_cover.html" with a=a cls="cover-thumb" %}</a>
+  <div class="mini-act-body">
+    <h3><a href="{% url 'activities:detail' a.pk %}">{{ a.title }}</a></h3>
+    <p class="muted small">{{ a.date|date:"D, M j" }}, {{ a.start_time|time:"g:i A" }}</p>
+    <p class="muted small mini-loc"><svg class="icon icon-sm" aria-hidden="true"><use href="#i-pin"/></svg>{{ a.location }}</p>
+    <p class="badge-row">{% if a.is_mine %}<span class="badge badge-admin">Organizer</span>{% else %}<span class="badge badge-resp-join">Joined</span>{% endif %}{% include "includes/_activity_status.html" %}</p>
+  </div>
+  <a class="btn btn-secondary btn-sm" href="{% url 'activities:detail' a.pk %}">View Details</a>
+</article>

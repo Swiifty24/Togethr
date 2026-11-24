@@ -1,0 +1,20 @@
+{% extends "base_auth.html" %}
+{% block title %}Log in · {{ SITE_NAME }}{% endblock %}
+{% block auth_title %}Welcome back{% endblock %}
+{% block auth_lead %}Log in to pick up where you left off.{% endblock %}
+{% block auth_body %}
+<form method="post">
+  {% csrf_token %}
+  {% if next %}<input type="hidden" name="next" value="{{ next }}">{% endif %}
+  {% include "includes/_form_errors.html" %}
+  {% include "includes/_field.html" with field=form.identifier icon="user" %}
+  {% include "includes/_field.html" with field=form.password icon="lock" toggle=True %}
+  <div class="row-between">
+    {% include "includes/_checkbox.html" with field=form.remember_me %}
+    <a href="{% url 'accounts:password_reset' %}" class="link-sm">Forgot password?</a>
+  </div>
+  <button type="submit" class="btn btn-primary btn-block">Log in</button>
+</form>
+{% endblock %}
+{% block auth_foot %}New to {{ SITE_NAME }}? <a href="{% url 'accounts:register' %}">Create an account</a>{% endblock %}
+

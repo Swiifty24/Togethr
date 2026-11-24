@@ -1,0 +1,13 @@
+<!doctype html>
+<html><body style="margin:0;padding:24px;background:#F6F7FA;font-family:Arial,Helvetica,sans-serif;color:#0F172A;">
+  <table role="presentation" width="100%" cellspacing="0" cellpadding="0"><tr><td align="center">
+    <table role="presentation" width="480" cellspacing="0" cellpadding="0" style="max-width:480px;background:#FFFFFF;border:1px solid #E9EEF5;border-radius:16px;padding:32px;">
+      <tr><td style="font-size:20px;font-weight:800;color:#FF5A43;padding-bottom:16px;">{{ site_name }}</td></tr>
+      <tr><td style="font-size:16px;line-height:1.5;padding-bottom:8px;">Hi {{ user.get_short_name }}, use this code to verify your email address:</td></tr>
+      <tr><td align="center" style="padding:20px 0;">
+        <div style="display:inline-block;font-size:34px;letter-spacing:10px;font-weight:700;background:#FFF3F1;color:#0F172A;padding:16px 24px;border-radius:12px;">{{ code }}</div>
+      </td></tr>
+      <tr><td style="font-size:14px;line-height:1.5;color:#5B6071;">This code expires in {{ minutes }} minutes. If you didn't create an account, you can safely ignore this email.</td></tr>
+    </table>
+  </td></tr></table>
+</body></html>

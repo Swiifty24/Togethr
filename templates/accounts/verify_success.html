@@ -1,0 +1,6 @@
+{% extends "base_auth.html" %}
+{% block title %}Email verified · {{ SITE_NAME }}{% endblock %}
+{% block auth_icon %}<div class="auth-icon auth-icon-success"><svg class="icon icon-lg" aria-hidden="true"><use href="#i-check"/></svg></div>{% endblock %}
+{% block auth_title %}You're all set, {{ verified_user.get_short_name }}!{% endblock %}
+{% block auth_lead %}Your email is verified and your account is active. You can log in now.{% endblock %}
+{% block auth_body %}<a class="btn btn-primary btn-block" href="{% url 'accounts:login' %}">Log in</a>{% endblock %}

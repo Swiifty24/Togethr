@@ -1,0 +1,20 @@
+{% extends "base_auth.html" %}
+{% load ui %}
+{% block title %}Create your account · {{ SITE_NAME }}{% endblock %}
+{% block auth_title %}Create your account{% endblock %}
+{% block auth_lead %}Join in a minute. We'll email you a code to confirm your address.{% endblock %}
+{% block auth_body %}
+<form method="post" data-password-form>
+  {% csrf_token %}
+  {% include "includes/_form_errors.html" %}
+  {% include "includes/_field.html" with field=form.full_name icon="user" %}
+  {% include "includes/_field.html" with field=form.username icon="user" %}
+  {% include "includes/_field.html" with field=form.email icon="mail" %}
+  {% include "includes/_field.html" with field=form.password1 icon="lock" toggle=True %}
+  {% password_rules %}
+  {% include "includes/_field.html" with field=form.password2 icon="lock" toggle=True %}
+  <button type="submit" class="btn btn-primary btn-block" data-password-submit>Create account</button>
+</form>
+{% endblock %}
+{% block auth_foot %}Already have an account? <a href="{% url 'accounts:login' %}">Log in</a>{% endblock %}
+{% block extra_js %}{% load static %}<script src="{% static 'js/password.js' %}" defer></script>{% endblock %}

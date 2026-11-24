@@ -1,0 +1,23 @@
+{% extends "base_auth.html" %}
+{% load static %}
+{% block title %}Verify your email · {{ SITE_NAME }}{% endblock %}
+{% block auth_icon %}<div class="auth-icon"><svg class="icon icon-lg" aria-hidden="true"><use href="#i-mail"/></svg></div>{% endblock %}
+{% block auth_title %}Check your email{% endblock %}
+{% block auth_lead %}We sent a 6-digit code to <strong>{{ masked_email }}</strong>. Enter it below to activate your account.{% endblock %}
+{% block auth_body %}
+<form method="post">
+  {% csrf_token %}
+  {% include "includes/_form_errors.html" %}
+  {% include "includes/_field.html" with field=form.code %}
+  <p class="help expiry" data-expires-in="{{ expires_in }}">
+    {% if expires_in %}Code expires in <strong data-expiry-time></strong>.{% else %}Your latest code has expired. Request a new one below.{% endif %}
+  </p>
+  <button type="submit" class="btn btn-primary btn-block">Verify email</button>
+</form>
+<form method="post" action="{% url 'accounts:resend_code' %}" class="resend-form">
+  {% csrf_token %}
+  <button type="submit" class="btn btn-ghost btn-block" data-resend data-resend-wait="{{ resend_wait }}">Resend code</button>
+</form>
+{% endblock %}
+{% block auth_foot %}Wrong account? <a href="{% url 'accounts:login' %}">Back to log in</a>{% endblock %}
+{% block extra_js %}<script src="{% static 'js/verify.js' %}" defer></script>{% endblock %}

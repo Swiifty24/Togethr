@@ -1,0 +1,14 @@
+{% extends "base_app.html" %}
+{% block title %}Cancel {{ activity.title }} · {{ SITE_NAME }}{% endblock %}
+{% block content %}
+<p class="crumb"><a href="{% url 'activities:detail' activity.pk %}"><svg class="icon icon-sm" aria-hidden="true"><use href="#i-chev-left"/></svg>Back to activity</a></p>
+<section class="card confirm-card">
+  <div class="auth-icon auth-icon-danger"><svg class="icon icon-lg" aria-hidden="true"><use href="#i-alert"/></svg></div>
+  <h1>Cancel this activity?</h1>
+  <p class="lead">“{{ activity.title }}” on {{ activity.date|date:"F j" }} will be marked as canceled and everyone who was invited or joined will be notified. This can't be undone.</p>
+  <form method="post" class="confirm-actions">{% csrf_token %}
+    <a class="btn btn-ghost" href="{% url 'activities:detail' activity.pk %}">Keep it</a>
+    <button type="submit" class="btn btn-danger">Yes, cancel activity</button>
+  </form>
+</section>
+{% endblock %}

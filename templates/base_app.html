@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% load static %}
+{% block extra_css %}<link rel="stylesheet" href="{% static 'css/app.css' %}"><link rel="stylesheet" href="{% static 'css/activities.css' %}">{% endblock %}
+{% block body_class %}app-body{% endblock %}
+{% block body %}
+{% with ns=request.resolver_match.namespace name=request.resolver_match.url_name %}
+<div class="app-shell">
+  <aside class="sidebar" id="sidebar" aria-label="Sidebar">
+    <div class="sidebar-top">
+      <a class="brand" href="{% url 'activities:home' %}">{% include "includes/_logo.html" %}<span class="brand-name">{{ SITE_NAME }}</span></a>
+      <button type="button" class="icon-btn sidebar-close" data-sidebar-close aria-label="Close menu"><svg class="icon" aria-hidden="true"><use href="#i-x"/></svg></button>
+    </div>
+    <nav class="side-nav" aria-label="Main">
+      <a class="side-link{% if ns == 'activities' and name == 'home' %} active{% endif %}" href="{% url 'activities:home' %}"><svg class="icon" aria-hidden="true"><use href="#i-home"/></svg>Home</a>
+      <a class="side-link{% if ns == 'activities' and name == 'my_activities' or ns == 'activities' and name == 'detail' or ns == 'activities' and name == 'edit' or ns == 'activities' and name == 'cancel' or ns == 'activities' and name == 'participants' %} active{% endif %}" href="{% url 'activities:my_activities' %}"><svg class="icon" aria-hidden="true"><use href="#i-list"/></svg>My Activities</a>
+      <a class="side-link{% if ns == 'activities' and name == 'create' %} active{% endif %}" href="{% url 'activities:create' %}"><svg class="icon" aria-hidden="true"><use href="#i-plus"/></svg>Create Activity</a>
+      <a class="side-link{% if ns == 'activities' and name == 'invitations' %} active{% endif %}" href="{% url 'activities:invitations' %}"><svg class="icon" aria-hidden="true"><use href="#i-mail"/></svg>Invited Activities{% if pending_invitations %}<span class="count-pill" aria-label="{{ pending_invitations }} waiting for your reply">{{ pending_invitations }}</span>{% endif %}</a>
+      <a class="side-link{% if ns == 'activities' and name == 'calendar' %} active{% endif %}" href="{% url 'activities:calendar' %}"><svg class="icon" aria-hidden="true"><use href="#i-calendar"/></svg>Calendar</a>
+      <a class="side-link{% if ns == 'members' and name == 'notifications' %} active{% endif %}" href="{% url 'members:notifications' %}"><svg class="icon" aria-hidden="true"><use href="#i-bell"/></svg>Notifications{% if unread_notifications %}<span class="count-pill" aria-label="{{ unread_notifications }} unread">{{ unread_notifications }}</span>{% endif %}</a>
+      <a class="side-link{% if ns == 'members' and name == 'profile' %} active{% endif %}" href="{% url 'members:profile' %}"><svg class="icon" aria-hidden="true"><use href="#i-user"/></svg>Profile</a>
+      <a class="side-link{% if ns == 'members' and name == 'settings' %} active{% endif %}" href="{% url 'members:settings' %}"><svg class="icon" aria-hidden="true"><use href="#i-settings"/></svg>Settings</a>
+      {% if user.is_superuser %}
+      <p class="side-heading">Administration</p>
+      <a class="side-link{% if ns == 'adminpanel' and name == 'home' %} active{% endif %}" href="{% url 'adminpanel:home' %}"><svg class="icon" aria-hidden="true"><use href="#i-grid"/></svg>Admin Home</a>
+      <a class="side-link{% if ns == 'adminpanel' and name != 'home' %} active{% endif %}" href="{% url 'adminpanel:user_list' %}"><svg class="icon" aria-hidden="true"><use href="#i-users"/></svg>Users</a>
+      <a class="side-link" href="{% url 'admin:index' %}"><svg class="icon" aria-hidden="true"><use href="#i-shield"/></svg>Django admin<svg class="icon icon-sm side-ext" aria-hidden="true"><use href="#i-external"/></svg></a>
+      {% endif %}
+    </nav>
+    <div class="side-user">
+      {% include "includes/_avatar.html" with u=user size="" %}
+      <div class="side-user-text"><p class="side-user-name">{{ user.full_name }}</p><p class="side-user-role">{{ user.role_label }}</p></div>
+      <form method="post" action="{% url 'accounts:logout' %}">{% csrf_token %}<button type="submit" class="icon-btn" aria-label="Log out" title="Log out"><svg class="icon" aria-hidden="true"><use href="#i-logout"/></svg></button></form>
+    </div>
+  </aside>
+  <div class="sidebar-backdrop" data-sidebar-close></div>
+
+  <div class="app-main">
+    <header class="topbar">
+      <button type="button" class="icon-btn menu-btn" data-sidebar-toggle aria-controls="sidebar" aria-expanded="false" aria-label="Open menu"><svg class="icon" aria-hidden="true"><use href="#i-menu"/></svg></button>
+      <a class="brand topbar-brand" href="{% url 'activities:home' %}">{% include "includes/_logo.html" %}<span class="brand-name">{{ SITE_NAME }}</span></a>
+      <a class="icon-btn bell" href="{% url 'members:notifications' %}" aria-label="Notifications{% if unread_notifications %} ({{ unread_notifications }} unread){% endif %}">
+        <svg class="icon" aria-hidden="true"><use href="#i-bell"/></svg>{% if unread_notifications %}<span class="bell-dot" aria-hidden="true"></span>{% endif %}
+      </a>
+    </header>
+    <main id="main" class="app-content">
+      {% include "includes/_messages.html" %}
+      {% block content %}{% endblock %}
+    </main>
+  </div>
+
+  <nav class="bottom-nav" aria-label="Quick navigation">
+    <a class="bn-link{% if ns == 'activities' and name == 'home' %} active{% endif %}" href="{% url 'activities:home' %}"><svg class="icon" aria-hidden="true"><use href="#i-home"/></svg><span>Home</span></a>
+    <a class="bn-link{% if ns == 'activities' and name == 'my_activities' %} active{% endif %}" href="{% url 'activities:my_activities' %}"><svg class="icon" aria-hidden="true"><use href="#i-list"/></svg><span>Mine</span></a>
+    <a class="bn-create" href="{% url 'activities:create' %}" aria-label="Create Activity"><svg class="icon" aria-hidden="true"><use href="#i-plus"/></svg></a>
+    <a class="bn-link{% if ns == 'activities' and name == 'invitations' %} active{% endif %}" href="{% url 'activities:invitations' %}"><svg class="icon" aria-hidden="true"><use href="#i-mail"/></svg><span>Invited</span>{% if pending_invitations %}<i class="bn-dot" aria-hidden="true"></i>{% endif %}</a>
+    <button type="button" class="bn-link" data-sidebar-toggle aria-controls="sidebar"><svg class="icon" aria-hidden="true"><use href="#i-menu"/></svg><span>More</span></button>
+  </nav>
+</div>
+{% endwith %}
+{% endblock %}
