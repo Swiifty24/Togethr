@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block title %}Bad request · {{ SITE_NAME }}{% endblock %}
+{% block content %}
+<section class="error-page">
+  <p class="error-code" aria-hidden="true">400</p>
+  <h1>Bad request</h1>
+  <p class="lead">Something about that request didn't look right. Please go back and try again.</p>
+  <div class="error-actions">
+    <a class="btn btn-primary" href="{% url 'core:landing' %}">Back to home</a>
+    <button type="button" class="btn btn-secondary" onclick="history.length > 1 ? history.back() : (location.href='{% url 'core:landing' %}')">Go back</button>
+  </div>
+</section>
+{% endblock %}

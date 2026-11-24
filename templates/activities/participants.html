@@ -1,0 +1,54 @@
+{% extends "base_app.html" %}
+{% block title %}Participants · {{ activity.title }} · {{ SITE_NAME }}{% endblock %}
+{% block content %}
+<p class="crumb"><a href="{% url 'activities:detail' activity.pk %}"><svg class="icon icon-sm" aria-hidden="true"><use href="#i-chev-left"/></svg>{{ activity.title }}</a></p>
+<div class="page-head"><div><h1>{% if is_organizer %}Manage Participants{% else %}Participants{% endif %}</h1>
+  <p class="muted">{{ activity.join_count }} going{% if activity.max_participants %} of {{ activity.max_participants }}{% endif %}. Minimum to confirm: {{ activity.min_participants }}.</p></div></div>
+
+<div class="two-col wide-left">
+  <div class="stack">
+    {% for label, items in grouped %}
+    {% if items or label == "Going" %}
+    <section class="card" aria-labelledby="g-{{ forloop.counter }}">
+      <h2 class="card-title" id="g-{{ forloop.counter }}">{{ label }} <span class="muted small">({{ items|length }})</span></h2>
+      {% if items %}
+      <ul class="person-list">
+        {% for p in items %}
+        <li>{% include "includes/_avatar.html" with u=p.user size="avatar-sm" %}
+          <div class="person-text"><p class="person-name">{{ p.user.full_name }}</p><p class="muted small">@{{ p.user.username }}</p></div>
+          {% if is_organizer %}<form method="post" action="{% url 'activities:remove_participant' activity.pk p.pk %}">{% csrf_token %}<button type="submit" class="btn btn-danger-ghost btn-sm" aria-label="Remove {{ p.user.full_name }}">Remove</button></form>{% endif %}
+        </li>
+        {% endfor %}
+      </ul>
+      {% else %}<p class="empty">Nobody yet.</p>{% endif %}
+    </section>
+    {% endif %}
+    {% endfor %}
+  </div>
+
+  {% if is_organizer %}
+  <section class="card" id="invite" aria-labelledby="inv-title">
+    <h2 class="card-title" id="inv-title">Invite friends</h2>
+    {% if can_invite %}
+    <form method="get" action="#invite" class="invite-search" role="search">
+      <label class="sr-only" for="inv-q">Search people</label>
+      <div class="input-wrap has-icon"><svg class="icon input-icon" aria-hidden="true"><use href="#i-search"/></svg><input id="inv-q" type="search" name="q" value="{{ q }}" class="input" placeholder="Search by name or username"></div>
+      <button class="btn btn-secondary" type="submit">Search</button>
+    </form>
+    {% if candidates %}
+    <form method="post" action="{% url 'activities:invite' activity.pk %}">{% csrf_token %}
+      <ul class="person-list pick-list">
+        {% for c in candidates %}
+        <li><label class="pick" for="u{{ c.pk }}"><input type="checkbox" class="checkbox" id="u{{ c.pk }}" name="user_ids" value="{{ c.pk }}">
+          {% include "includes/_avatar.html" with u=c size="avatar-sm" %}<span class="person-text"><span class="person-name">{{ c.full_name }}</span><span class="muted small">@{{ c.username }}</span></span></label></li>
+        {% endfor %}
+      </ul>
+      <button type="submit" class="btn btn-primary btn-block">Send invitations</button>
+    </form>
+    {% elif q %}<p class="empty">No one found for “{{ q }}”, or they're already part of this activity.</p>
+    {% else %}<p class="help">Type at least two letters of a name or username. Invited people get a notification and can reply Join, Can't Join or Not Sure.</p>{% endif %}
+    {% else %}<p class="empty">This activity is no longer open for invitations.</p>{% endif %}
+  </section>
+  {% endif %}
+</div>
+{% endblock %}

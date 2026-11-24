@@ -1,0 +1,41 @@
+{% extends "base_app.html" %}
+{% block title %}{{ target.full_name }} · {{ SITE_NAME }}{% endblock %}
+{% block content %}
+<p class="crumb"><a href="{% url 'adminpanel:user_list' %}"><svg class="icon icon-sm" aria-hidden="true"><use href="#i-chev-left"/></svg>All users</a></p>
+<div class="page-head">
+  <div class="detail-head">
+    <div class="avatar avatar-lg">{{ target.initials }}</div>
+    <div>
+      <h1>{{ target.full_name }}</h1>
+      <p class="muted">@{{ target.username }}</p>
+      <p class="badge-row">{% include "includes/_role_badge.html" with u=target %} {% include "includes/_status_badge.html" with u=target %}</p>
+    </div>
+  </div>
+  <div class="page-actions">
+    <a class="btn btn-secondary" href="{% url 'adminpanel:user_edit' target.pk %}"><svg class="icon icon-sm" aria-hidden="true"><use href="#i-edit"/></svg>Edit</a>
+    {% if not is_self and target.email_verified %}
+    <form method="post" action="{% url 'adminpanel:user_toggle_active' target.pk %}">{% csrf_token %}
+      <button type="submit" class="btn btn-secondary">{% if target.is_active %}Deactivate{% else %}Activate{% endif %}</button>
+    </form>
+    {% endif %}
+    {% if not is_self %}<a class="btn btn-danger-ghost" href="{% url 'adminpanel:user_delete' target.pk %}"><svg class="icon icon-sm" aria-hidden="true"><use href="#i-trash"/></svg>Delete</a>{% endif %}
+  </div>
+</div>
+
+<div class="two-col">
+  <section class="card" aria-labelledby="acc-title">
+    <h2 id="acc-title" class="card-title">Account</h2>
+    <dl class="kv kv-stack">
+      <div><dt>Email</dt><dd>{{ target.email }} {% if target.email_verified %}<span class="badge badge-active">Verified</span>{% else %}<span class="badge badge-unverified">Not verified</span>{% endif %}</dd></div>
+      <div><dt>Joined</dt><dd>{{ target.date_joined|date:"F j, Y g:i A" }}</dd></div>
+      <div><dt>Last sign-in</dt><dd>{{ target.last_login|date:"F j, Y g:i A"|default:"Never" }}</dd></div>
+      <div><dt>Location</dt><dd>{{ target.profile.location|default:"Not set" }}</dd></div>
+      <div><dt>About</dt><dd>{{ target.profile.bio|default:"Not set" }}</dd></div>
+    </dl>
+  </section>
+  <section class="card" aria-labelledby="ta-title">
+    <h2 id="ta-title" class="card-title">Recent activity</h2>
+    {% include "includes/_activity_list.html" with items=activities %}
+  </section>
+</div>
+{% endblock %}

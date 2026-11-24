@@ -1,0 +1,24 @@
+<header class="site-header" data-site-header>
+  <div class="container nav-bar">
+    <a class="brand" href="{% url 'core:landing' %}" aria-label="{{ SITE_NAME }} home">{% include "includes/_logo.html" %}<span class="brand-name">{{ SITE_NAME }}</span></a>
+    <button type="button" class="nav-toggle" data-nav-toggle aria-expanded="false" aria-controls="site-nav" aria-label="Toggle menu">
+      <svg class="icon icon-open" aria-hidden="true"><use href="#i-menu"/></svg>
+      <svg class="icon icon-close" aria-hidden="true"><use href="#i-x"/></svg>
+    </button>
+    <nav id="site-nav" class="site-nav" aria-label="Main">
+      <ul class="nav-links">
+        <li><a href="{% url 'core:landing' %}">Home</a></li>
+        <li><a href="{% url 'core:landing' %}#features">Features</a></li>
+      </ul>
+      <div class="nav-actions">
+        {% if user.is_authenticated %}
+          <a class="btn btn-primary btn-sm" href="{% if user.is_superuser %}{% url 'adminpanel:home' %}{% else %}{% url 'activities:home' %}{% endif %}">Go to Home</a>
+          <form method="post" action="{% url 'accounts:logout' %}" class="inline-form">{% csrf_token %}<button type="submit" class="btn btn-ghost btn-sm">Log out</button></form>
+        {% else %}
+          <a class="btn btn-ghost btn-sm" href="{% url 'accounts:login' %}">Log in</a>
+          <a class="btn btn-primary btn-sm" href="{% url 'accounts:register' %}">Get started</a>
+        {% endif %}
+      </div>
+    </nav>
+  </div>
+</header>

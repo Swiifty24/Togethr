@@ -1,0 +1,60 @@
+{% extends "base_app.html" %}
+{% block title %}Administration · {{ SITE_NAME }}{% endblock %}
+{% block content %}
+<div class="page-head">
+  <div><h1>Administration</h1><p class="muted">System overview and account management.</p></div>
+  <div class="page-actions">
+    <a class="btn btn-secondary" href="{% url 'adminpanel:user_list' %}"><svg class="icon icon-sm" aria-hidden="true"><use href="#i-users"/></svg>Manage users</a>
+    <a class="btn btn-primary" href="{% url 'adminpanel:user_create' %}"><svg class="icon icon-sm" aria-hidden="true"><use href="#i-plus"/></svg>Add user</a>
+  </div>
+</div>
+
+<div class="stat-grid">
+  <a class="stat" href="{% url 'adminpanel:user_list' %}"><span class="stat-label">Total users</span><span class="stat-value">{{ stats.total }}</span></a>
+  <a class="stat stat-teal" href="{% url 'adminpanel:user_list' %}?status=active"><span class="stat-label">Active</span><span class="stat-value">{{ stats.active }}</span></a>
+  <a class="stat stat-amber" href="{% url 'adminpanel:user_list' %}?status=unverified"><span class="stat-label">Unverified</span><span class="stat-value">{{ stats.unverified }}</span></a>
+  <a class="stat stat-rose" href="{% url 'adminpanel:user_list' %}?status=inactive"><span class="stat-label">Deactivated</span><span class="stat-value">{{ stats.inactive }}</span></a>
+</div>
+
+<div class="admin-grid">
+  <section class="card" aria-labelledby="alerts-title">
+    <h2 id="alerts-title" class="card-title">System notifications</h2>
+    {% for a in alerts %}
+    <div class="notice notice-{{ a.level }}">
+      <p class="notice-title">{{ a.title }}</p>
+      <p class="notice-text">{{ a.detail }}</p>
+      {% if a.url %}<a class="link-sm" href="{{ a.url }}">Review</a>{% endif %}
+    </div>
+    {% empty %}
+    <div class="notice notice-success"><p class="notice-title">All clear</p><p class="notice-text">Nothing needs your attention right now.</p></div>
+    {% endfor %}
+  </section>
+
+  <section class="card" aria-labelledby="reg-title">
+    <div class="card-head"><h2 id="reg-title" class="card-title">New registrations</h2><span class="muted small">Last 7 days: {{ series_total }}</span></div>
+    <div class="bars" role="img" aria-label="New registrations per day over the last 7 days">
+      {% for d in series %}
+      <div class="bar-col"><span class="bar-num">{{ d.count }}</span><span class="bar" style="height: {{ d.pct }}%"></span><span class="bar-day">{{ d.date|date:"D" }}</span></div>
+      {% endfor %}
+    </div>
+  </section>
+
+  <section class="card" aria-labelledby="recent-title">
+    <div class="card-head"><h2 id="recent-title" class="card-title">Recently registered</h2><a class="link-sm" href="{% url 'adminpanel:user_list' %}">View all</a></div>
+    <ul class="mini-list">
+      {% for u in recent_users %}
+      <li>
+        <span class="avatar avatar-sm">{{ u.initials }}</span>
+        <div class="mini-text"><a class="user-name" href="{% url 'adminpanel:user_detail' u.pk %}">{{ u.full_name }}</a><p class="muted small">{{ u.date_joined|timesince }} ago</p></div>
+        {% include "includes/_status_badge.html" with u=u %}
+      </li>
+      {% empty %}<li class="empty">No users yet.</li>{% endfor %}
+    </ul>
+  </section>
+
+  <section class="card" aria-labelledby="act-title">
+    <h2 id="act-title" class="card-title">System activity</h2>
+    {% include "includes/_activity_list.html" with items=activities show_user=True %}
+  </section>
+</div>
+{% endblock %}

@@ -1,0 +1,39 @@
+{% extends "base_app.html" %}
+{% block title %}Invited Activities · {{ SITE_NAME }}{% endblock %}
+{% block content %}
+<div class="page-head"><div><h1>Invited Activities</h1><p class="muted">Plans your friends invited you to.</p></div></div>
+<nav class="tabs" aria-label="Filter invitations">
+  <a href="?tab=waiting" class="tab{% if tab == 'waiting' %} active{% endif %}">Waiting for my reply</a>
+  <a href="?tab=all" class="tab{% if tab == 'all' %} active{% endif %}">All invitations</a>
+</nav>
+{% for inv in page.object_list %}
+{% with a=inv.activity %}
+<article class="invite-card">
+  <a href="{% url 'activities:detail' a.pk %}" tabindex="-1" aria-hidden="true">{% include "includes/_cover.html" with a=a cls="cover-thumb cover-thumb-lg" %}</a>
+  <div class="invite-body">
+    <div class="act-tags">{% if a.category %}<span class="pill">{{ a.category.name }}</span>{% endif %}{% include "includes/_activity_status.html" %}</div>
+    <h2><a href="{% url 'activities:detail' a.pk %}">{{ a.title }}</a></h2>
+    <p class="act-org">{% include "includes/_avatar.html" with u=a.organizer size="avatar-xs" %}<span>{{ a.organizer.full_name }}</span></p>
+    <ul class="act-meta">
+      <li><svg class="icon icon-sm" aria-hidden="true"><use href="#i-calendar"/></svg>{{ a.date|date:"D, M j" }}, {{ a.start_time|time:"g:i A" }}</li>
+      <li><svg class="icon icon-sm" aria-hidden="true"><use href="#i-pin"/></svg>{{ a.location }}</li>
+      <li><svg class="icon icon-sm" aria-hidden="true"><use href="#i-users"/></svg>{{ a.joined_count }} going</li>
+    </ul>
+  </div>
+  <div class="invite-actions">
+    {% if a.is_open %}
+      {% include "activities/_respond.html" with a=a my_part=inv next=request.get_full_path %}
+      <a class="btn btn-ghost btn-sm" href="{% url 'activities:detail' a.pk %}">View Details</a>
+    {% else %}
+      <p class="resp-note">Your response: {% include "includes/_response_badge.html" with response=inv.response label=inv.get_response_display %}</p>
+      <a class="btn btn-ghost btn-sm" href="{% url 'activities:detail' a.pk %}">View Details</a>
+    {% endif %}
+  </div>
+</article>
+{% endwith %}
+{% empty %}
+<div class="empty-state"><svg class="icon icon-lg" aria-hidden="true"><use href="#i-mail"/></svg><h3>{% if tab == 'waiting' %}You're all caught up{% else %}No invitations yet{% endif %}</h3><p>When a friend invites you to an activity it will show up here.</p>
+  <a class="btn btn-secondary" href="{% url 'activities:home' %}">Explore Activities</a></div>
+{% endfor %}
+{% include "activities/_pagination.html" with querystring="tab="|add:tab %}
+{% endblock %}

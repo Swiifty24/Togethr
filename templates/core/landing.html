@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}{{ SITE_NAME }} · Better when we're together{% endblock %}
+{% block content %}
+<section class="hero">
+  <div class="container hero-grid">
+    <div class="hero-copy">
+      <h1>Better when we're together.</h1>
+      <p class="lead">Togethr is a calm, collaborative space for the people you work and plan with. One account, one place, everyone in sync.</p>
+      <div class="hero-actions">
+        {% if user.is_authenticated %}
+          <a class="btn btn-primary btn-lg" href="{% if user.is_superuser %}{% url 'adminpanel:home' %}{% else %}{% url 'activities:home' %}{% endif %}">Go to Home</a>
+        {% else %}
+          <a class="btn btn-primary btn-lg" href="{% url 'accounts:register' %}">Get started</a>
+          <a class="btn btn-secondary btn-lg" href="{% url 'accounts:login' %}">Log in</a>
+        {% endif %}
+      </div>
+      <p class="hero-note">Free to join. Every address is confirmed with a one-time code.</p>
+    </div>
+    <div class="hero-media">
+      <img src="{% static 'img/hero-collaboration.svg' %}" width="640" height="560"
+           alt="Three overlapping circles, each holding a person, joined by a shared check mark in the middle: people coming together.">
+    </div>
+  </div>
+</section>
+
+<section id="features" class="section">
+  <div class="container">
+    <h2 class="section-title">A space you can trust, from the first click</h2>
+    <p class="section-lead">The basics done properly, so the people you collaborate with are exactly who they say they are.</p>
+    <div class="features">
+      <article class="feature">
+        <span class="feature-icon"><svg class="icon" aria-hidden="true"><use href="#i-shield-check"/></svg></span>
+        <h3>Verified, secure accounts</h3>
+        <p>Every account is confirmed with a six-digit code sent to its owner's email, and protected by strong password rules.</p>
+      </article>
+      <article class="feature">
+        <span class="feature-icon feature-icon-lav"><svg class="icon" aria-hidden="true"><use href="#i-user"/></svg></span>
+        <h3>A space that's yours</h3>
+        <p>Keep your profile current and discover activities, plan with friends and see who is coming, all in one place.</p>
+      </article>
+      <article class="feature">
+        <span class="feature-icon feature-icon-teal"><svg class="icon" aria-hidden="true"><use href="#i-users"/></svg></span>
+        <h3>Clear roles, firm boundaries</h3>
+        <p>Members get their own space. Administrators manage people and access, and the rules are enforced on the server.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+{% if not user.is_authenticated %}
+<section class="section section-tight">
+  <div class="container">
+    <div class="cta-band">
+      <div>
+        <h2>Ready to get Togethr?</h2>
+        <p>Create your account in about a minute.</p>
+      </div>
+      <a class="btn btn-primary btn-lg" href="{% url 'accounts:register' %}">Create your account</a>
+    </div>
+  </div>
+</section>
+{% endif %}
+{% endblock %}
