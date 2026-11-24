@@ -12,7 +12,7 @@ class ProfileForm(StyledFormMixin, forms.Form):
     username = forms.CharField(label="Username", max_length=150, validators=[MinLengthValidator(5)],
                                help_text="At least 5 characters. Letters, numbers and @ . + - _ only.")
     location = forms.CharField(label="Location", max_length=100, required=False,
-                               widget=forms.TextInput(attrs={"placeholder": "City, Country"}))
+                               widget=forms.TextInput(attrs={"placeholder": "City, Country", "data-geo-input": ""}))
     avatar = forms.ImageField(label="Profile picture", required=False,
                               help_text="JPG, PNG or WebP, up to 3 MB.",
                               widget=forms.FileInput(attrs={"accept": "image/*"}))

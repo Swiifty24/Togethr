@@ -21,7 +21,18 @@
     <select id="f-cat" name="category" class="input select"><option value="">All categories</option>
       {% for c in categories %}<option value="{{ c.slug }}"{% if filters.category.value == c.slug %} selected{% endif %}>{{ c.name }}</option>{% endfor %}</select></div>
   <div><label class="sr-only" for="f-date">Date</label><input type="date" id="f-date" name="date" class="input" value="{{ filters.date.value|default:'' }}"></div>
-  <div><label class="sr-only" for="f-loc">Location</label><input type="text" id="f-loc" name="location" class="input" placeholder="Location" value="{{ filters.location.value|default:'' }}"></div>
+  <div class="geo-city" data-geo-city data-geo-endpoint="{% url 'core:cities' %}" data-geo-limit="3">
+    <label class="sr-only" for="f-loc">Location</label>
+    <input type="text" id="f-loc" name="location" class="input" placeholder="Location" value="{{ filters.location.value|default:'' }}" data-geo-input>
+    <div class="geo-city-actions">
+      <button type="button" class="btn btn-secondary btn-sm" data-geo-button aria-label="Use my current city">
+        <svg class="icon icon-sm" aria-hidden="true"><use href="#i-pin"/></svg>Use my city
+      </button>
+      <datalist id="geo-cities-filter" data-geo-list></datalist>
+    </div>
+    <p class="help geo-status" data-geo-status></p>
+    <p class="help geo-attribution">City data © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer">OpenStreetMap contributors</a>.</p>
+  </div>
   <div><label class="sr-only" for="f-av">Availability</label>
     <select id="f-av" name="availability" class="input select"><option value="">Any availability</option><option value="open"{% if filters.availability.value == 'open' %} selected{% endif %}>Has open slots</option></select></div>
   <div class="d-actions"><button type="submit" class="btn btn-primary">Search</button>{% if filters_active %}<a class="btn btn-ghost" href="{% url 'activities:home' %}">Clear Filters</a>{% endif %}</div>

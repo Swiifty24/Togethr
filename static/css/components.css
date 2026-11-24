@@ -79,6 +79,16 @@ textarea.input { resize: vertical; min-height: 110px; }
 .fieldset legend + * { clear: both; }
 .code-input { text-align: center; font-size: 1.75rem; letter-spacing: .5em; font-weight: 700; padding-left: 14px; }
 
+/* ---- Nearby city helper ---- */
+.geo-city { min-width: 0; }
+.geo-city-actions { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; margin-top: 6px; }
+.geo-city-actions .btn { min-height: 44px; padding: 7px 14px; font-size: .82rem; }
+.geo-city .geo-status { color: var(--text-secondary); }
+.geo-city .geo-status:empty { display: none; }
+.geo-attribution { font-size: .75rem; margin-top: 6px; }
+.geo-attribution a { color: var(--text-secondary); text-decoration: underline; }
+.geo-attribution a:hover { color: var(--primary-text); }
+
 /* Password checklist */
 .pw-rules { background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px 16px; margin: -4px 0 18px; }
 .pw-rules-title { font-size: .8125rem; font-weight: 700; margin: 0 0 8px; color: var(--text-secondary); }

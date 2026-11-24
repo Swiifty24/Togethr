@@ -7,6 +7,7 @@ app_name = "core"
 
 urlpatterns = [
     path("", views.landing, name="landing"),
+    path("geo/cities/", views.city_suggestions, name="cities"),
 ]
 
 if settings.DEBUG:

@@ -25,7 +25,17 @@
       {% include "includes/_form_errors.html" %}
       {% include "includes/_field.html" with field=form.full_name %}
       {% include "includes/_field.html" with field=form.username %}
-      {% include "includes/_field.html" with field=form.location %}
+      <div class="geo-city" data-geo-city data-geo-endpoint="{% url 'core:cities' %}" data-geo-limit="3">
+        {% include "includes/_field.html" with field=form.location %}
+        <div class="geo-city-actions">
+          <button type="button" class="btn btn-secondary btn-sm" data-geo-button aria-label="Use my current city">
+            <svg class="icon icon-sm" aria-hidden="true"><use href="#i-pin"/></svg>Use my city
+          </button>
+          <datalist id="geo-cities-profile" data-geo-list></datalist>
+        </div>
+        <p class="help geo-status" data-geo-status></p>
+        <p class="help geo-attribution">City data © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer">OpenStreetMap contributors</a>.</p>
+      </div>
       {% include "includes/_field.html" with field=form.bio %}
       {% include "includes/_field.html" with field=form.avatar %}
       {% if user.profile.avatar %}{% include "includes/_checkbox.html" with field=form.remove_avatar %}{% endif %}

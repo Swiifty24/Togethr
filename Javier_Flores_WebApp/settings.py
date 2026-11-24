@@ -61,6 +61,11 @@ CSRF_TRUSTED_ORIGINS = env_list("DJANGO_CSRF_TRUSTED_ORIGINS")
 
 SITE_NAME = env("SITE_NAME", "Togethr")
 
+# Nearby-city suggestions: one proxied reverse lookup per click, cached briefly.
+# The URL is configurable so the provider can be changed without a code update.
+GEO_REVERSE_URL = env("GEO_REVERSE_URL", "https://nominatim.openstreetmap.org/reverse").strip()
+GEO_USER_AGENT = env("GEO_USER_AGENT", "Togethr/1.0 (local development)").strip()
+
 DJANGO_ADMIN_URL = env("DJANGO_ADMIN_URL", "django-admin/").lstrip("/")
 if not DJANGO_ADMIN_URL.endswith("/"):
     DJANGO_ADMIN_URL += "/"

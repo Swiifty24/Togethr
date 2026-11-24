@@ -33,7 +33,7 @@ class ActivityForm(StyledFormMixin, forms.ModelForm):
         widgets = {
             "title": forms.TextInput(attrs={"placeholder": "Sunset hike at Pasonanca"}),
             "description": forms.Textarea(attrs={"rows": 5, "placeholder": "What's the plan? What should people bring?"}),
-            "location": forms.TextInput(attrs={"placeholder": "Where are we meeting?"}),
+            "location": forms.TextInput(attrs={"placeholder": "Where are we meeting?", "data-geo-input": ""}),
             "date": forms.DateInput(attrs={"type": "date"}),
             "start_time": forms.TimeInput(attrs={"type": "time"}),
             "end_time": forms.TimeInput(attrs={"type": "time"}),

@@ -12,7 +12,17 @@
   {% include "includes/_field.html" with field=form.description %}
   <div class="form-grid">
     {% include "includes/_field.html" with field=form.category %}
-    {% include "includes/_field.html" with field=form.location icon="pin" %}
+    <div class="geo-city" data-geo-city data-geo-endpoint="{% url 'core:cities' %}" data-geo-limit="3">
+      {% include "includes/_field.html" with field=form.location icon="pin" %}
+      <div class="geo-city-actions">
+        <button type="button" class="btn btn-secondary btn-sm" data-geo-button aria-label="Use my current city">
+          <svg class="icon icon-sm" aria-hidden="true"><use href="#i-pin"/></svg>Use my city
+        </button>
+        <datalist id="geo-cities-activity" data-geo-list></datalist>
+      </div>
+      <p class="help geo-status" data-geo-status></p>
+      <p class="help geo-attribution">City data © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer">OpenStreetMap contributors</a>.</p>
+    </div>
   </div>
   <div class="form-grid form-grid-3">
     {% include "includes/_field.html" with field=form.date %}

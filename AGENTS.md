@@ -12,7 +12,8 @@ This folder (with manage.py) is the project root. Run all commands here.
 - `members/` : profile, settings (change password), notifications.
 - `adminpanel/` : Admin Home and user management (Super Administrator only).
 - `core/` : landing page, error pages, shared context processor, `create_database` command.
-- `templates/` and `static/` : shared templates/includes and CSS/JS/images.
+- `templates/` and `static/` : shared templates/includes and CSS/JS/images;
+  `static/js/location.js` is the opt-in nearby-city helper.
 - `media/` : uploaded activity covers and profile pictures (not committed).
 - `WebApp_Project/` and `demo/` : old exam apps, left on disk but unused.
 - `_her_source/` : read-only reference copy of the original project. Never edit it.
@@ -27,7 +28,7 @@ Create a local virtual environment first, then:
     python manage.py migrate
     python manage.py createsuperuser
     python manage.py runserver
-    python manage.py test accounts
+    python manage.py test accounts activities core
 
 MySQL/MariaDB must be running (XAMPP control panel). Keep `DJANGO_DEBUG=True` for
 local development; `DJANGO_SECRET_KEY` is required in `.env` and must never be
@@ -44,6 +45,11 @@ hard-coded in settings. Start MySQL before `create_database` and `migrate`.
    URLs, template logic, form fields, or context variable names.
 6. After model changes, tell the user to run `makemigrations` and `migrate`.
 7. The old exam apps are unused: do not wire their routes back into `urls.py`.
+8. City lookup is opt-in: keep the Django proxy, cache and 1-request/second limit,
+   never send coordinates straight to a third party, and keep the visible
+   "City data © OpenStreetMap contributors" attribution. Browser location only
+   works on HTTPS/localhost and falls back to manual entry. Provider settings
+   are `GEO_REVERSE_URL` and `GEO_USER_AGENT` in `.env.example`.
 
 ## Pages
 - `/` public landing page; logged-in users land on Home (`/home/` style activities).
@@ -51,6 +57,7 @@ hard-coded in settings. Start MySQL before `create_database` and `migrate`.
 - `/account/` profile, settings, notifications (logged in).
 - `/` (activities) Home discovery, My Activities, Create/Edit/Cancel, Details,
   Participants, Invitations, Calendar (logged in).
+- `/geo/cities/` logged-in JSON endpoint for opt-in nearby-city suggestions.
 - `/manage/` Super Administrator home and user management.
 - `/django-admin/` built-in Django admin (URL from `DJANGO_ADMIN_URL` in `.env`).
 
